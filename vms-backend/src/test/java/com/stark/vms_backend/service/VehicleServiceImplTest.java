@@ -7,10 +7,10 @@ import com.stark.vms_backend.entity.VehicleStatus;
 import com.stark.vms_backend.exception.DuplicateVehicleNumberException;
 import com.stark.vms_backend.exception.VehicleNotFoundException;
 import com.stark.vms_backend.repository.VehicleRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -22,13 +22,21 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class VehicleServiceTest {
+class VehicleServiceImplTest {
 
     @Mock
     private VehicleRepository vehicleRepository;
 
-    @InjectMocks
-    private VehicleService vehicleService;
+    private VehicleServiceImpl vehicleService;
+
+    @BeforeEach
+    void setUp() {
+        vehicleService = new VehicleServiceImpl(
+                vehicleRepository,
+                new DefaultVehicleNumberNormalizer(),
+                new DefaultVehicleMapper()
+        );
+    }
 
     @Test
     void create_newVehicle_succeeds() {
@@ -156,4 +164,3 @@ class VehicleServiceTest {
         verify(vehicleRepository, never()).deleteById(anyLong());
     }
 }
-
